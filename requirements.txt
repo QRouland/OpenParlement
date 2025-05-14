@@ -1,0 +1,7 @@
+flask
+SQLAlchemy
+python-dotenv
+unidecode
+apscheduler
+marshmallow
+alembic
