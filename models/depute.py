@@ -49,6 +49,9 @@ class Depute(Base):
     circonscription_code: Mapped[int] = mapped_column(Integer())
     circonscription: Mapped["Circonscription"] = relationship(back_populates="representative")
 
+
+    votes: Mapped[list["Vote"]] = relationship(back_populates="depute")
+
     __table_args__ = (ForeignKeyConstraint(
         ['circonscription_departement_code', 'circonscription_code'],
         ['circonscription.departement_code', 'circonscription.code']

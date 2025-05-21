@@ -5,3 +5,5 @@ unidecode
 apscheduler
 marshmallow
 alembic
+requests
+clint
