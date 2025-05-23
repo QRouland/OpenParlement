@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import Dict, Tuple
 
 import click
-from db import session_scope
-from models.scrutin import Ballot, Scrutin, Vote
-from utils import read_files_from_directory
+from app.db import session_scope
+from app.models.scrutin import Ballot, Scrutin, Vote
+from app.utils import read_files_from_directory
 
 
 ParsedData = Tuple[Dict[str, Scrutin], Dict[str, Vote]]

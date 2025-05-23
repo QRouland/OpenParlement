@@ -1,16 +1,13 @@
-from typing import Any
-
 from sqlalchemy import String, Integer, ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
     relationship,
 )
-from unidecode import unidecode
 
-from models import Base
-from utils import build_api_url, normalize
-from utils.db import normalize_field
+from app.models import Base
+from app.utils.db import normalize_field
+
 
 class Depute(Base):
     """
@@ -28,18 +25,25 @@ class Depute(Base):
         circonscription_code (int): Constituency number within the department.
         circonscription (Circonscription): Relationship to the constituency.
     """
+
     __tablename__ = "depute"
 
     id: Mapped[str] = mapped_column(String(), primary_key=True)
 
     last_name: Mapped[str] = mapped_column(String())
     last_name_normalize: Mapped[str] = mapped_column(
-        String(), default=normalize_field('last_name'), onupdate=normalize_field('last_name'), index=True
+        String(),
+        default=normalize_field("last_name"),
+        onupdate=normalize_field("last_name"),
+        index=True,
     )
 
     first_name: Mapped[str] = mapped_column(String())
     first_name_normalize: Mapped[str] = mapped_column(
-        String(), default=normalize_field('first_name'), onupdate=normalize_field('first_name'), index=True
+        String(),
+        default=normalize_field("first_name"),
+        onupdate=normalize_field("first_name"),
+        index=True,
     )
 
     gp_id: Mapped[int] = mapped_column(ForeignKey("groupe_parlementaire.id"))
@@ -47,15 +51,19 @@ class Depute(Base):
 
     circonscription_departement_code: Mapped[str] = mapped_column(String())
     circonscription_code: Mapped[int] = mapped_column(Integer())
-    circonscription: Mapped["Circonscription"] = relationship(back_populates="representative")
-
+    circonscription: Mapped["Circonscription"] = relationship(
+        back_populates="representative"
+    )
 
     votes: Mapped[list["Vote"]] = relationship(back_populates="depute")
 
-    __table_args__ = (ForeignKeyConstraint(
-        ['circonscription_departement_code', 'circonscription_code'],
-        ['circonscription.departement_code', 'circonscription.code']
-    ), {})
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["circonscription_departement_code", "circonscription_code"],
+            ["circonscription.departement_code", "circonscription.code"],
+        ),
+        {},
+    )
 
     @property
     def official_page(self) -> str:
@@ -87,14 +95,13 @@ class GroupParlementaire(Base):
         name (str): Name of the parliamentary group.
         members (list[Depute]): Deputies associated with the group.
     """
+
     __tablename__ = "groupe_parlementaire"
 
     id: Mapped[str] = mapped_column(String(), primary_key=True)
     name: Mapped[str] = mapped_column(String(), index=True)
 
-    members: Mapped[list["Depute"]] = relationship(
-        back_populates="gp"
-    )
+    members: Mapped[list["Depute"]] = relationship(back_populates="gp")
 
 
 class Circonscription(Base):
@@ -107,16 +114,18 @@ class Circonscription(Base):
         code (int): Constituency number within the department.
         representative (Depute): Deputy representing this constituency.
     """
+
     __tablename__ = "circonscription"
 
-    departement_code: Mapped[str] = mapped_column(ForeignKey("departement.code"), primary_key=True)
+    departement_code: Mapped[str] = mapped_column(
+        ForeignKey("departement.code"), primary_key=True
+    )
     departement: Mapped["Departement"] = relationship(back_populates="circonscriptions")
 
     code: Mapped[int] = mapped_column(Integer(), primary_key=True)
 
-    representative: Mapped["Depute"] = relationship(
-        back_populates="circonscription"
-    )
+    representative: Mapped["Depute"] = relationship(back_populates="circonscription")
+
 
 class Departement(Base):
     """
@@ -129,6 +138,7 @@ class Departement(Base):
         region (Region): Region this department belongs to.
         circonscriptions (list[Circonscription]): Constituencies in the department.
     """
+
     __tablename__ = "departement"
 
     code: Mapped[str] = mapped_column(String(), primary_key=True)
@@ -151,11 +161,10 @@ class Region(Base):
         name (str): Name of the region.
         departements (list[Departement]): Departments within the region.
     """
+
     __tablename__ = "region"
 
     id: Mapped[int] = mapped_column(Integer(), primary_key=True)
     name: Mapped[str] = mapped_column(String(), unique=True, index=True)
 
-    departements: Mapped[list["Departement"]] = relationship(
-        back_populates="region"
-    )
+    departements: Mapped[list["Departement"]] = relationship(back_populates="region")

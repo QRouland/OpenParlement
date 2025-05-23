@@ -1,13 +1,11 @@
 import enum
-import json
-import os
 from typing import Dict, Tuple, List
 
 import click
 
-from db import session_scope
-from models.depute import Depute, GroupParlementaire, Departement, Circonscription, Region
-from utils import read_files_from_directory
+from app.db import session_scope
+from app.models.depute import Depute, GroupParlementaire, Departement, Circonscription, Region
+from app.utils import read_files_from_directory
 
 # Type alias for return of parse_deputes
 ParsedData = Tuple[Dict[str, Region], Dict[str, Departement], Dict[str, Circonscription], Dict[str, Depute]]

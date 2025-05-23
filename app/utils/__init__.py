@@ -6,7 +6,7 @@ import re
 from backports.datetime_fromisoformat import os
 from unidecode import unidecode
 
-from app import app
+from flask import current_app as app
 
 
 def normalize(string: str) -> str:

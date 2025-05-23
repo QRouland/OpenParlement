@@ -1,10 +1,49 @@
 import os
+import shutil
+import tempfile
+import zipfile
+
 import click
 import requests
-import zipfile
-import tempfile
+from click import pass_context
 from clint.textui import progress
-import shutil
+from flask import current_app as app
+
+from commands import db_cli
+
+
+@db_cli.command("download")
+@pass_context
+def download(ctx):
+    """
+    Download deputes and scrutins data.
+    """
+    download_deputes.invoke(ctx)
+    download_scrutins.invoke(ctx)
+
+@db_cli.command('download:deputes')
+def download_deputes():
+    """
+    Download deputes data.
+    """
+    download_and_unzip(
+        app.config['ACTEURS_ORGANES_URL'],
+        (
+            ("json/acteur/", app.config['ACTEURS_FOLDER']),
+            ("json/organe/", app.config['ORGANES_FOLDER']),
+        )
+    )
+
+@db_cli.command('download:scrutins')
+def download_scrutins():
+    """
+    Download scrutins data.
+    """
+    download_and_unzip(
+        app.config['SCRUTINS_URL'],
+        (("json", app.config['SCRUTINS_FOLDER']),))
+
+
 
 def download_and_unzip(url : str, zip_mvs: tuple[tuple[(str, str)], ...]):
     temp_dir = tempfile.mkdtemp()

@@ -1,32 +1,34 @@
+from typing import Any
 
-from typing import Sequence, Any
-from flask import jsonify
+from marshmallow import Schema, fields
 from sqlalchemy.sql import func, select
 from sqlalchemy.sql.expression import and_
 
-import app
-from db import session_scope
-from models.depute import Circonscription, Departement, Depute
-from marshmallow import Schema, fields
-
-from utils import normalize
-from utils.db import pagined_query, query_one
+from app.db import session_scope
+from app.models.depute import Circonscription, Departement, Depute
+from app.utils import normalize
+from app.utils.db import pagined_query, query_one
 
 
 class DepartementSchema(Schema):
     """Schema for the Departement model."""
+
     code = fields.String()
     name = fields.String()
     url = fields.Str()
 
+
 class CirconscriptionSchema(Schema):
     """Schema for the Circonscription model."""
+
     code = fields.String()
     departement = fields.Nested(DepartementSchema)
     url = fields.Str()
 
+
 class DeputeSchema(Schema):
     """Schema for the Depute model."""
+
     id = fields.Str()
     first_name = fields.Str()
     last_name = fields.Str()
@@ -52,13 +54,23 @@ def deputes_get_handler(first_name=None, last_name=None) -> Any:
         stmt = select(Depute)
         stmt_count = select(func.count()).select_from(Depute)
         if first_name is not None:
-            stmt = stmt.where(Depute.first_name_normalize.ilike(f"%{normalize(first_name)}%"))
-            stmt_count = stmt_count.where(Depute.first_name_normalize.ilike(f"%{normalize(first_name)}%"))
+            stmt = stmt.where(
+                Depute.first_name_normalize == f"%{normalize(first_name)}%"
+            )
+            stmt_count = stmt_count.where(
+                Depute.first_name_normalize == f"%{normalize(first_name)}%"
+            )
         if last_name is not None:
-            stmt = stmt.where(Depute.last_name_normalize.ilike(f"%{normalize(last_name)}%"))
-            stmt_count = stmt_count.where(Depute.last_name_normalize.ilike(f"%{normalize(last_name)}%"))
+            stmt = stmt.where(
+                Depute.last_name_normalize == f"%{normalize(last_name)}%"
+            )
+            stmt_count = stmt_count.where(
+                Depute.last_name_normalize == f"%{normalize(last_name)}%"
+            )
 
-        return pagined_query(session, stmt, stmt_count, DeputeSchema(many=True), Depute.last_name)
+        return pagined_query(
+            session, stmt, stmt_count, DeputeSchema(many=True), Depute.last_name
+        )
 
 
 def depute_get_handler(depute_id: str) -> Any:
@@ -85,7 +97,10 @@ def departements_get_handler() -> Any:
     with session_scope() as session:
         stmt = select(Departement)
         stmt_count = select(func.count()).select_from(Departement)
-        return pagined_query(session, stmt, stmt_count, DepartementSchema(many=True), Departement.code)
+        return pagined_query(
+            session, stmt, stmt_count, DepartementSchema(many=True), Departement.code
+        )
+
 
 def departement_get_handler(department_code: str) -> Any:
     """
@@ -98,9 +113,15 @@ def departement_get_handler(department_code: str) -> Any:
         Dict[str, str]: A dictionary representing the Departement record that was retrieved.
     """
     with session_scope() as session:
-        return query_one(session, Departement, and_(Departement.code == department_code), DepartementSchema())
+        return query_one(
+            session,
+            Departement,
+            and_(Departement.code == department_code),
+            DepartementSchema(),
+        )
 
-def deputes_by_departement_handler(department_code: str) -> Any :
+
+def deputes_by_departement_handler(department_code: str) -> Any:
     """
     Get a list of Depute records by the code of their associated Departement.
 
@@ -111,9 +132,18 @@ def deputes_by_departement_handler(department_code: str) -> Any :
         List[Dict[str, str]]: A list of dictionaries representing the Depute records that matched the search criteria.
     """
     with session_scope() as session:
-        stmt = select(Depute).where(Depute.circonscription_departement_code == department_code)
-        stmt_count = select(func.count()).select_from(Depute).where(Depute.circonscription_departement_code == department_code)
-        return pagined_query(session, stmt, stmt_count, DeputeSchema(many=True), Depute.last_name)
+        stmt = select(Depute).where(
+            Depute.circonscription_departement_code == department_code
+        )
+        stmt_count = (
+            select(func.count())
+            .select_from(Depute)
+            .where(Depute.circonscription_departement_code == department_code)
+        )
+        return pagined_query(
+            session, stmt, stmt_count, DeputeSchema(many=True), Depute.last_name
+        )
+
 
 def circonscriptions_get_handler() -> Any:
     """
@@ -125,9 +155,18 @@ def circonscriptions_get_handler() -> Any:
     with session_scope() as session:
         stmt = select(Circonscription)
         stmt_count = select(func.count()).select_from(Circonscription)
-        return pagined_query(session, stmt, stmt_count, CirconscriptionSchema(many=True), Circonscription.departement_code)
+        return pagined_query(
+            session,
+            stmt,
+            stmt_count,
+            CirconscriptionSchema(many=True),
+            Circonscription.departement_code,
+        )
 
-def circonscription_get_handler(departement_code :str, circonscription_code: str) -> Any:
+
+def circonscription_get_handler(
+    departement_code: str, circonscription_code: str
+) -> Any:
     """
     Get a single Circonscription record by its code and the code of its associated Departement.
 
@@ -140,12 +179,19 @@ def circonscription_get_handler(departement_code :str, circonscription_code: str
     """
     with session_scope() as session:
         return query_one(
-            session, Circonscription,
-            and_(Circonscription.code == circonscription_code, Circonscription.departement_code == departement_code),
-            CirconscriptionSchema()
+            session,
+            Circonscription,
+            and_(
+                Circonscription.code == circonscription_code,
+                Circonscription.departement_code == departement_code,
+            ),
+            CirconscriptionSchema(),
         )
 
-def depute_by_circonscription_handler(department_code: str, circonscription_code: str) -> Any :
+
+def depute_by_circonscription_handler(
+    department_code: str, circonscription_code: str
+) -> Any:
     """
     Get a single Depute record by the code of their associated Circonscription and the code of its associated Departement.
 
@@ -160,6 +206,9 @@ def depute_by_circonscription_handler(department_code: str, circonscription_code
         return query_one(
             session,
             Depute,
-            and_(Depute.circonscription_departement_code == department_code and Depute.circonscription_code == circonscription_code),
-            DeputeSchema()
+            and_(
+                Depute.circonscription_departement_code == department_code
+                and Depute.circonscription_code == circonscription_code
+            ),
+            DeputeSchema(),
         )

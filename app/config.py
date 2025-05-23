@@ -6,6 +6,8 @@ DEFAULT_PER_PAGE = 100
 ACTEURS_FOLDER = "data/acteurs"
 ORGANES_FOLDER = "data/organes"
 SCRUTINS_FOLDER = "data/scrutins"
-ACTEURS_ORGANES_URL = "https://data.assemblee-nationale.fr/static/openData/repository/17/amo/deputes_actifs_mandats_actifs_organes/"\
-"AMO10_deputes_actifs_mandats_actifs_organes.json.zip"
+ACTEURS_ORGANES_URL = (
+    "https://data.assemblee-nationale.fr/static/openData/repository/17/amo/deputes_actifs_mandats_actifs_organes/"
+    "AMO10_deputes_actifs_mandats_actifs_organes.json.zip"
+)
 SCRUTINS_URL = "https://data.assemblee-nationale.fr/static/openData/repository/17/loi/scrutins/Scrutins.json.zip"

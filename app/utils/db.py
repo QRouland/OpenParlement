@@ -2,8 +2,8 @@ from flask import request
 from sqlalchemy.sql import func, select
 from typing_extensions import Any, Callable
 
-from utils import normalize
-from app import app
+from app.utils import normalize
+from flask import current_app as app
 
 
 def normalize_field(field_name: str) -> Callable:
