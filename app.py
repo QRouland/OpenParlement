@@ -59,7 +59,7 @@ def before_request():
 
 @app.route("/")
 def hello():
-    return "Welcome to MyDeputerFRApi !"
+    return "Welcome to OpenParlement !"
 
 from apis import depute
 from apis import scrutin
