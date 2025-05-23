@@ -1,0 +1,156 @@
+summary: Get information about deputes.
+description: |
+  Retrieves detailed informations about all French national assembly members (deputes).
+
+parameters:
+  - name: page
+    in: query
+    type: integer
+    default: 1
+    minimum: 1
+    description: |
+      The page number to retrieve. 
+      Must be a positive integer (default is 1).
+
+    required: false
+
+  - name: per_page
+    in: query
+    type: integer
+    default: {MAX_PER_PAGE}
+    minimum: 1
+    maximum: {MAX_PER_PAGE}
+    description: |
+      The number of items to return per page. 
+      Must be a positive integer and no greater than {MAX_PER_PAGE} (default is {MAX_PER_PAGE}).
+
+    required: false
+
+responses:
+  200:
+    description: |
+      Successfully retrieved and returned the list of deputes.
+
+    schema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              circonscription:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: |
+                      The unique code representing the electoral district 
+                      in which this depute serves as a representative.
+
+                  departement:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: |
+                          The unique code corresponding to the French administrative department
+                          associated with the depute's constituency.
+
+                      name:
+                        type: string
+                        description: |
+                          The official name of the department within which this depute operates.
+
+              first_name:
+                type: string
+                description: |
+                  The given name or forename of the depute, as recorded in official records.
+
+              id:
+                type: string
+                description: |
+                  A unique identifier assigned of the depute.
+
+              last_name:
+                type: string
+                description: |
+                  The surname or family name of the depute, as officially documented.
+
+              official_image:
+                type: string
+                format: uri
+                description: |
+                  A URL pointing to an official photograph of the depute hosted by the Assemblée Nationale.
+
+              official_page:
+                type: string
+                format: uri
+                description: |
+                  The official web page or profile of the depute hosted by the Assemblée Nationale.
+
+            required:
+              - circonscription
+              - first_name
+              - id
+              - last_name
+              - official_image
+              - official_page
+
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              description: |
+                The page number of the result set currently being displayed.
+
+            per_page:
+              type: integer
+              description: |
+                The maximum number of items that are returned on each page.
+
+            total_items:
+              type: integer
+              description: |
+                The overall count of deputes returned by this request.
+
+            total_pages:
+              type: integer
+              description: |
+                The total number of pages to display all the items matching the given criteria.
+
+          required:
+            - current_page
+            - per_page
+            - total_items
+            - total_pages
+      example:
+        data:
+          - circonscription:
+              code: '10'
+              departement:
+                code: '93'
+                name: Seine-Saint-Denis
+            first_name: Nadège
+            id: PA795228
+            last_name: Abomangoli
+            official_image: >-
+              https://www.assemblee-nationale.fr/dyn/static/tribun/17/photos/carre/795228.jpg
+            official_page: 'https://www.assemblee-nationale.fr/dyn/deputes/PA795228'
+          - circonscription:
+              code: '1'
+              departement:
+                code: '51'
+                name: Marne
+            first_name: Xavier
+            id: PA794278
+            last_name: Albertini
+            official_image: >-
+              https://www.assemblee-nationale.fr/dyn/static/tribun/17/photos/carre/794278.jpg
+            official_page: 'https://www.assemblee-nationale.fr/dyn/deputes/PA794278'
+        meta:
+          current_page: 1
+          per_page: 2
+          total_items: 576
+          total_pages: 2

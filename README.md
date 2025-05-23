@@ -1,10 +1,15 @@
 # OpenParlement
 
-**OpenParlement** is an open-source Flask application that provides a public API to access data related to the French Parliament. It aims to improve transparency, facilitate civic tech initiatives, and support developers, researchers, and journalists in accessing structured parliamentary information.
+**OpenParlement** is providing a public API to access data related to the French Parliament. 
+It aims to improve transparency, facilitate civic tech initiatives, and support anybody in accessing structured parliamentary information.
+
+## ⚠️ Disclaimer
+
+> **Work In Progress (WIP):** This API is currently under active development and is subject to change at any time.  
 
 ## 🚀 Features
 
-- RESTful API to access deputies, laws, votes, political parties, and sessions.
+- RESTful API to access deputies, laws, votes, political parties, and sessions. (WIP)
 - Regularly updated data from official French parliamentary sources (https://data.assemblee-nationale.fr/).
 
 ## 📦 Tech Stack
@@ -25,7 +30,7 @@ Example endpoints:
 - `GET /parties` – List political parties
 - `GET /sessions` – Parliamentary sessions
 
-Detailed documentation is available at: [API Docs](https://api.openparlement.fr/docs) (WIP)
+Detailed documentation is available at: [API Docs](https://api.openparlement.fr/apidocs) (WIP)
 
 ## 🚀 Getting Started
 

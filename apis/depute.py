@@ -2,11 +2,13 @@ from flask import jsonify, request
 from flask.helpers import abort, redirect
 from app import app
 from handlers.depute import circonscription_get_handler, circonscriptions_get_handler, departement_get_handler, departements_get_handler, depute_by_circonscription_handler, depute_get_handler, deputes_by_departement_handler, deputes_get_handler
+from flasgger import swag_from
 
 # =======================
 # Députés
 # =======================
 @app.route('/deputes', methods=['GET'])
+@swag_from('../specs/deputes.yml')
 def deputes_get():
     first_name = request.args.get('first_name')
     last_name = request.args.get('last_name')
@@ -20,6 +22,7 @@ def deputes_get():
     abort(400)
 
 @app.route('/deputes/<depute_id>', methods=['GET'])
+@swag_from('../specs/depute.yml')
 def depute_get(depute_id : str):
     depute = depute_get_handler(depute_id)
     if depute:

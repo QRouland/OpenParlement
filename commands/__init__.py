@@ -18,7 +18,7 @@ def update_deputes(ctx):
 @pass_context
 def update_scrutins(ctx):
     """
-    Download and load scrutings data.
+    Download and load scrutins data.
     """
     download_scrutins.invoke(ctx)
     load_scrutins.invoke(ctx)
@@ -27,7 +27,7 @@ def update_scrutins(ctx):
 @pass_context
 def update(ctx):
     """
-    Download and load deputes and scrutings data.
+    Download and load deputes and scrutins data.
     """
     download.invoke(ctx)
     load.invoke(ctx)

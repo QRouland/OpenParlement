@@ -5,7 +5,7 @@ from marshmallow import fields
 from marshmallow.schema import Schema
 from db import session_scope
 from models.scrutin import Scrutin, Vote
-from utils.db import get_paginated_records, pagined_query, query_one
+from utils.db import pagined_query, query_one
 
 
 class ScrutinSchema(Schema):
@@ -26,7 +26,7 @@ def scrutins_get_handler() -> Any:
     with session_scope() as session:
         stmt = select(Scrutin)
         stmt_count = select(func.count()).select_from(Scrutin)
-        return pagined_query(session, stmt, stmt_count, ScrutinSchema(many=True), Scrutin.id)
+        return pagined_query(session, stmt, stmt_count, ScrutinSchema(many=True), Scrutin.date_scrutin.desc())
 
 
 def scrutin_get_handler(scrutin_id: str) -> Any:

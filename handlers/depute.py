@@ -10,7 +10,7 @@ from models.depute import Circonscription, Departement, Depute
 from marshmallow import Schema, fields
 
 from utils import normalize
-from utils.db import get_paginated_records, pagined_query, query_one
+from utils.db import pagined_query, query_one
 
 
 class DepartementSchema(Schema):

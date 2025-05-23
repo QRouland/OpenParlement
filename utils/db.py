@@ -2,8 +2,8 @@ from flask import request
 from sqlalchemy.sql import func, select
 from typing_extensions import Any, Callable
 
-from config_default import MAX_PER_PAGE
 from utils import normalize
+from app import app
 
 
 def normalize_field(field_name: str) -> Callable:
@@ -26,15 +26,13 @@ def normalize_field(field_name: str) -> Callable:
     return _normalize
 
 
-def get_paginated_records(session, model,  schema, order_by=None) -> Any:
+def query_one(session, model, filter, schema, order_by=None) -> Any | None:
+    per_page = int(request.args.get('per_page', app.config["MAX_PER_PAGE"]))
+
     stmt = select(model)
-    stmt_count = select(func.count(model.id))
-    return pagined_query(session, stmt, stmt_count, order_by)
+    stmt = stmt.where(filter)
+    stmt = stmt.order_by(order_by)
 
-def query_one(session, model, filter, schema) -> Any | None:
-    per_page = int(request.args.get('per_page', MAX_PER_PAGE))
-
-    stmt = select(model).where(filter)
     result = session.execute(stmt)
     record = result.scalars().first()
     if record:
@@ -51,11 +49,7 @@ def query_one(session, model, filter, schema) -> Any | None:
 
 def pagined_query(session, stmt_query, stmt_count, schema, order_by=None):
     page = int(request.args.get('page', 1))
-    per_page = int(request.args.get('per_page', MAX_PER_PAGE))
-
-    if per_page > MAX_PER_PAGE:
-        per_page = MAX_PER_PAGE
-
+    per_page = int(request.args.get('per_page', app.config["MAX_PER_PAGE"]))
     stmt_query = stmt_query.order_by(order_by).offset((page - 1) * per_page).limit(per_page)
     total_items = session.execute(stmt_count).scalar_one()
     result = session.execute(stmt_query)

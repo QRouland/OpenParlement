@@ -7,3 +7,4 @@ marshmallow
 alembic
 requests
 clint
+flasgger
