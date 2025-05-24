@@ -22,11 +22,11 @@ class Scrutin(Base):
 
     __tablename__ = "scrutin"
 
-    id: Mapped[str] = mapped_column(String(), primary_key=True)
-    titre: Mapped[str] = mapped_column(String())
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    titre: Mapped[str] = mapped_column(String(255))
     date_scrutin: Mapped[Date] = mapped_column(Date())
-    sort: Mapped[str] = mapped_column(String())
-    type: Mapped[str] = mapped_column(String())
+    sort: Mapped[str] = mapped_column(String(32))
+    type: Mapped[str] = mapped_column(String(32))
     votes: Mapped[List["Vote"]] = relationship(back_populates="scrutin")
 
     @hybrid_property

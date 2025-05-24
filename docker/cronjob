@@ -1,0 +1,1 @@
+0 6 * * * /app/db_update.sh >> /var/log/cron_flask_db_upgrade.log 2>&1

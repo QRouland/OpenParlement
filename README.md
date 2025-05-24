@@ -17,7 +17,7 @@ It aims to improve transparency, facilitate civic tech initiatives, and support 
 - **Python 3.10+**
 - **Flask** - Web framework
 - **SQLAlchemy** - ORM for database interaction
-- **SQlite/MariaDB/PostgreSQL** 
+- **SQlite/MariaDB** 
 ## 📚 API Overview
 
 Base URL: `https://api.openparlement.fr/` (WIP)

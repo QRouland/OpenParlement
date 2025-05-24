@@ -28,19 +28,19 @@ class Depute(Base):
 
     __tablename__ = "depute"
 
-    id: Mapped[str] = mapped_column(String(), primary_key=True)
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
 
-    last_name: Mapped[str] = mapped_column(String())
+    last_name: Mapped[str] = mapped_column(String(255))
     last_name_normalize: Mapped[str] = mapped_column(
-        String(),
+        String(255),
         default=normalize_field("last_name"),
         onupdate=normalize_field("last_name"),
         index=True,
     )
 
-    first_name: Mapped[str] = mapped_column(String())
+    first_name: Mapped[str] = mapped_column(String(255))
     first_name_normalize: Mapped[str] = mapped_column(
-        String(),
+        String(255),
         default=normalize_field("first_name"),
         onupdate=normalize_field("first_name"),
         index=True,
@@ -49,7 +49,7 @@ class Depute(Base):
     gp_id: Mapped[int] = mapped_column(ForeignKey("groupe_parlementaire.id"))
     gp: Mapped["GroupParlementaire"] = relationship(back_populates="members")
 
-    circonscription_departement_code: Mapped[str] = mapped_column(String())
+    circonscription_departement_code: Mapped[str] = mapped_column(String(32))
     circonscription_code: Mapped[int] = mapped_column(Integer())
     circonscription: Mapped["Circonscription"] = relationship(
         back_populates="representative"
@@ -98,8 +98,8 @@ class GroupParlementaire(Base):
 
     __tablename__ = "groupe_parlementaire"
 
-    id: Mapped[str] = mapped_column(String(), primary_key=True)
-    name: Mapped[str] = mapped_column(String(), index=True)
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), index=True)
 
     members: Mapped[list["Depute"]] = relationship(back_populates="gp")
 
@@ -141,8 +141,8 @@ class Departement(Base):
 
     __tablename__ = "departement"
 
-    code: Mapped[str] = mapped_column(String(), primary_key=True)
-    name: Mapped[str] = mapped_column(String(), index=True)
+    code: Mapped[str] = mapped_column(String(32), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), index=True)
 
     region_id: Mapped[int] = mapped_column(ForeignKey("region.id"))
     region: Mapped["Region"] = relationship(back_populates="departements")
@@ -165,6 +165,6 @@ class Region(Base):
     __tablename__ = "region"
 
     id: Mapped[int] = mapped_column(Integer(), primary_key=True)
-    name: Mapped[str] = mapped_column(String(), unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
 
     departements: Mapped[list["Departement"]] = relationship(back_populates="region")

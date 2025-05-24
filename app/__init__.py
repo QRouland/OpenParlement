@@ -1,34 +1,51 @@
+import os
 import traceback
 
+from dotenv import load_dotenv
+from flasgger import Swagger
 from flask import Flask
+from flask import json, request, abort
+from werkzeug.exceptions import HTTPException
 
 from app.apis import main_bp
 from app.db import init_db
+from app.utils.config import str_to_bool, str_to_int
 from commands import db_cli
 
-from flask import json, request, abort
-from werkzeug.exceptions import HTTPException
-from flasgger import Swagger
 
-
-def create_app(config_class="app.config", load_env=True):
+def create_app(config_class="app.config", load_env_=True):
     app = Flask(__name__)
 
+
     # Load Configuration
-    app.config.from_object(config_class)
-    if load_env:
-        app.config.from_prefixed_env()
+    load_dotenv()
+    app.config['HOST'] = os.getenv('FLASK_HOST', "127.0.0.1:5000")
+    app.config['MAX_PER_PAGE'] = str_to_int(os.getenv('FLASK_MAX_PER_PAGE', 200))
+    app.config['DEFAULT_PER_PAGE'] = str_to_int(os.getenv('FLASK_DEFAULT_PER_PAGE', 100))
+    app.config['ACTEURS_FOLDER'] = os.getenv('FLASK_ACTEURS_FOLDER', "data/acteurs")
+    app.config['ORGANES_FOLDER'] = os.getenv('FLASK_ORGANES_FOLDER', "data/organes")
+    app.config['SCRUTINS_FOLDER'] = os.getenv('FLASK_SCRUTINS_FOLDER', "data/scrutins")
+    app.config['ACTEURS_ORGANES_URL'] = (
+        os.getenv(
+            'FLASK_ACTEURS_ORGANES_URL',
+            "https://data.assemblee-nationale.fr/static/openData/repository/17/amo/deputes_actifs_mandats_actifs_organes/"
+            "AMO10_deputes_actifs_mandats_actifs_organes.json.zip"
+        )
+    )
+    app.config['SCRUTINS_URL'] = os.getenv(
+        'FLASK_SCRUTINS_URL',
+        "https://data.assemblee-nationale.fr/static/openData/repository/17/loi/scrutins/Scrutins.json.zip"
+    )
+
+    app.config['DB_ECHO'] = str_to_bool(os.getenv('FLASK_DB_ECHO', "False"))
+    db_url = os.getenv('FLASK_DB_URL')
+    if db_url is None:
+        raise Exception("The FLASK_DB_URL environment variable must be set")
+    app.config['DB_URL'] = db_url
 
     # Make flask stateless
     app.config["SESSION_COOKIE_NAME"] = ""
     app.config["PERMANENT_SESSION_LIFETIME"] = 0
-
-    if (
-        isinstance(app.config["DB_ECHO"], str)
-        and app.config["DB_ECHO"].lower() == "true"
-    ):
-        app.config["DB_ECHO"] = True
-
     # Setup Flasgger
     template = {
         "swagger": "2.0",

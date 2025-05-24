@@ -21,39 +21,39 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     """Upgrade schema."""
     op.create_table('groupe_parlementaire',
-    sa.Column('id', sa.String(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('id', sa.String(32), nullable=False),
+    sa.Column('name', sa.String(255), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_groupe_parlementaire_name'), 'groupe_parlementaire', ['name'], unique=False)
     op.create_table('region',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('name', sa.String(255), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_region_name'), 'region', ['name'], unique=True)
     op.create_table('departement',
-    sa.Column('code', sa.String(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('code', sa.String(32), nullable=False),
+    sa.Column('name', sa.String(255), nullable=False),
     sa.Column('region_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['region_id'], ['region.id'], ),
     sa.PrimaryKeyConstraint('code')
     )
     op.create_index(op.f('ix_departement_name'), 'departement', ['name'], unique=False)
     op.create_table('circonscription',
-    sa.Column('departement_code', sa.String(), nullable=False),
+    sa.Column('departement_code', sa.String(32), nullable=False),
     sa.Column('code', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['departement_code'], ['departement.code'], ),
     sa.PrimaryKeyConstraint('departement_code', 'code')
     )
     op.create_table('depute',
-    sa.Column('id', sa.String(), nullable=False),
-    sa.Column('last_name', sa.String(), nullable=False),
-    sa.Column('last_name_normalize', sa.String(), nullable=False),
-    sa.Column('first_name', sa.String(), nullable=False),
-    sa.Column('first_name_normalize', sa.String(), nullable=False),
-    sa.Column('gp_id', sa.String(), nullable=False),
-    sa.Column('circonscription_departement_code', sa.String(), nullable=False),
+    sa.Column('id', sa.String(32), nullable=False),
+    sa.Column('last_name', sa.String(255), nullable=False),
+    sa.Column('last_name_normalize', sa.String(255), nullable=False),
+    sa.Column('first_name', sa.String(255), nullable=False),
+    sa.Column('first_name_normalize', sa.String(255), nullable=False),
+    sa.Column('gp_id', sa.String(32), nullable=False),
+    sa.Column('circonscription_departement_code', sa.String(32), nullable=False),
     sa.Column('circonscription_code', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['circonscription_departement_code', 'circonscription_code'], ['circonscription.departement_code', 'circonscription.code'], ),
     sa.ForeignKeyConstraint(['gp_id'], ['groupe_parlementaire.id'], ),

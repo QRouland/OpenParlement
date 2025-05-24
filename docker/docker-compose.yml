@@ -1,0 +1,35 @@
+services:
+  flask_app:
+    build: #network: host
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - flask_app_data:/app/data
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_DB_URL=mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mariadb/${MYSQL_DATABASE}
+      - FLASK_DEBUG=True
+    depends_on:
+      wait-for-db:
+        condition: service_completed_successfully
+
+  mariadb:
+    image: mariadb:lts-noble
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  wait-for-db:
+    image: atkrad/wait4x
+    depends_on:
+      - mariadb
+    command: tcp mariadb:3306 -t 30s -i 250ms
+
+volumes:
+  flask_app_data:
+  db_data:

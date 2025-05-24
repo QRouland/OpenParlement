@@ -2,12 +2,12 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
+from dotenv import load_dotenv
 from alembic import context
 
-import app
+import os
 
-
+load_dotenv()
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -22,15 +22,16 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
-from models import depute
-import models
-target_metadata = models.Base.metadata
+from app.models import depute
+from app.models import scrutin
+import app.models
+target_metadata = app.models.Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-
+config.set_main_option('sqlalchemy.url', os.getenv("FLASK_DB_URL"))
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

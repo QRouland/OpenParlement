@@ -1,6 +1,4 @@
 HOST = "127.0.0.1:5000"
-DB_URL = "sqlite:///db.sqlite3"
-DB_ECHO = False
 MAX_PER_PAGE = 200
 DEFAULT_PER_PAGE = 100
 ACTEURS_FOLDER = "data/acteurs"
