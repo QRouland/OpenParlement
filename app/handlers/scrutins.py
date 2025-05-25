@@ -79,3 +79,6 @@ def depute_scrutin_vote_get_handler(depute_id: str, scrutin_id: str) -> Any:
             and_(Vote.depute_id == depute_id, Vote.scrutin_id == scrutin_id),
             VoteSchema(),
         )
+
+def scrutin_votes_get_handler():
+    raise NotImplemented

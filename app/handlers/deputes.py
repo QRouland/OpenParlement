@@ -102,7 +102,7 @@ def departements_get_handler() -> Any:
         )
 
 
-def departement_get_handler(department_code: str) -> Any:
+def circonscriptions_by_departement_handler(department_code: str) -> Any:
     """
     Get a single Departement record by its code.
 

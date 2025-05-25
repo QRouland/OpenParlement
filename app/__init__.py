@@ -52,7 +52,7 @@ def create_app(config_class="app.config", load_env_=True):
         "info": {
             "title": "Open Parlement API",
             "description": "OpenParlement is providing a public API to access data related to the French Parliament",
-            "version": "0.0.1",
+            "version": "dev",
         },
         "host": "localhost:5000",  # overrides localhost:5000
         "schemes": ["http", "https"],
