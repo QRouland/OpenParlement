@@ -1,0 +1,115 @@
+summary: Get information about scrutins.
+description: |
+  Retrieves detailed information about votes (scrutins) in the French National Assembly.
+parameters:
+  - name: page
+    in: query
+    type: integer
+    default: 1
+    minimum: 1
+    description: |
+      The page number to retrieve.
+      Must be a positive integer (default is 1).
+
+    required: false
+
+  - name: per_page
+    in: query
+    type: integer
+    default: {MAX_PER_PAGE}
+    minimum: 1
+    maximum: {MAX_PER_PAGE}
+    description: |
+      The number of items to return per page.
+      Must be a positive integer and no greater than {MAX_PER_PAGE} (default is {MAX_PER_PAGE}).
+
+    required: false
+
+responses:
+  200:
+    description: |
+      Successfully retrieved and returned the list of scrutins.
+
+    schema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: |
+                  A unique identifier for the scrutin, representing the vote session.
+
+              date_scrutin:
+                type: string
+                format: date
+                description: |
+                  The date on which the scrutin (vote) took place, in ISO 8601 format.
+
+              sort:
+                type: string
+                description: |
+                  The result or outcome of the vote. Possible values include "adopté" or "rejeté".
+
+              titre:
+                type: string
+                description: |
+                  The full title of the scrutin, including the context and amendment number if applicable.
+
+            required:
+              - id
+              - date_scrutin
+              - sort
+              - titre
+
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              description: |
+                The page number of the result set currently being displayed.
+
+            per_page:
+              type: integer
+              description: |
+                The maximum number of items that are returned on each page.
+
+            total_items:
+              type: integer
+              description: |
+                The overall count of scrutins returned by this request.
+
+            total_pages:
+              type: integer
+              description: |
+                The total number of pages to display all the items matching the given criteria.
+
+          required:
+            - current_page
+            - per_page
+            - total_items
+            - total_pages
+
+      example:
+        data:
+          - id: "2012"
+            date_scrutin: "2025-05-23"
+            sort: "rejeté"
+            titre: "l'amendement n° 698 de Mme Blin et l'amendement identique suivant à l'article 9 de la proposition de loi relative au droit à l'aide à mourir (première lecture)."
+          - id: "2009"
+            date_scrutin: "2025-05-23"
+            sort: "rejeté"
+            titre: "l'amendement n° 1833 de M. Allégret-Pilot à l'article 9 de la proposition de loi relative au droit à l'aide à mourir (première lecture)."
+          - id: "2016"
+            date_scrutin: "2025-05-23"
+            sort: "adopté"
+            titre: "l'amendement n° 556 de Mme Vidal à l'article 9 de la proposition de loi relative au droit à l'aide à mourir (première lecture)."
+        meta:
+          current_page: 1
+          per_page: 3
+          total_items: 2020
+          total_pages: 200

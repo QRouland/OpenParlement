@@ -1,0 +1,111 @@
+summary: Get information about electoral districts (circonscriptions).
+description: |
+  Retrieves detailed information about all French electoral districts (circonscriptions).
+
+parameters:
+  - name: page
+    in: query
+    type: integer
+    default: 1
+    minimum: 1
+    description: |
+      The page number to retrieve. 
+      Must be a positive integer (default is 1).
+    required: false
+
+  - name: per_page
+    in: query
+    type: integer
+    default: {MAX_PER_PAGE}
+    minimum: 1
+    maximum: {MAX_PER_PAGE}
+    description: |
+      The number of items to return per page. 
+      Must be a positive integer and no greater than {MAX_PER_PAGE} (default is {MAX_PER_PAGE}).
+    required: false
+
+responses:
+  200:
+    description: |
+      Successfully retrieved and returned the list of electoral districts.
+
+    schema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              circonscription:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: |
+                      The unique code representing the electoral district 
+                      in which this record is associated.
+
+                  departement:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: |
+                          The unique code corresponding to the French administrative department
+                          associated with the electoral district.
+
+                      name:
+                        type: string
+                        description: |
+                          The official name of the department within which this electoral district operates.
+
+            required:
+              - circonscription
+
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              description: |
+                The page number of the result set currently being displayed.
+
+            per_page:
+              type: integer
+              description: |
+                The maximum number of items that are returned on each page.
+
+            total_items:
+              type: integer
+              description: |
+                The overall count of electoral districts returned by this request.
+
+            total_pages:
+              type: integer
+              description: |
+                The total number of pages to display all the items matching the given criteria.
+
+          required:
+            - current_page
+            - per_page
+            - total_items
+            - total_pages
+
+      example:
+        data:
+          - circonscription:
+              code: '1'
+              departement:
+                code: '51'
+                name: Marne
+          - circonscription:
+              code: '2'
+              departement:
+                code: '93'
+                name: Seine-Saint-Denis
+        meta:
+          current_page: 1
+          per_page: 200
+          total_items: 576
+          total_pages: 200

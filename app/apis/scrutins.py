@@ -1,4 +1,7 @@
-from flask import abort, jsonify, request
+from flasgger import swag_from
+from flask import abort, jsonify
+
+from app.apis import main_bp
 from app.handlers.scrutins import (
     depute_scrutin_vote_get_handler,
     depute_votes_get_handler,
@@ -7,13 +10,13 @@ from app.handlers.scrutins import (
     vote_get_handler,
     votes_get_handler,
 )
-from app.apis import main_bp
 
 
 # =======================
 # Scrutins
 # =======================
 @main_bp.route("/scrutins", methods=["GET"])
+@swag_from("../../specs/scrutins.yml")
 def scrutins_get():
     scrutins = scrutins_get_handler()
     return jsonify(scrutins), 200

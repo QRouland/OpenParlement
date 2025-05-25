@@ -20,7 +20,7 @@ from flask import current_app as app
 # Députés
 # =======================
 @main_bp.route("/deputes", methods=["GET"])
-@swag_from("../specs/deputes.yml")
+@swag_from("../../specs/deputes.yml")
 def deputes_get():
     first_name = request.args.get("first_name")
     last_name = request.args.get("last_name")
@@ -35,7 +35,7 @@ def deputes_get():
 
 
 @main_bp.route("/deputes/<depute_id>", methods=["GET"])
-@swag_from("../specs/depute.yml")
+@swag_from("../../specs/depute.yml")
 def depute_get(depute_id: str):
     depute = depute_get_handler(depute_id)
     if depute:
@@ -47,6 +47,7 @@ def depute_get(depute_id: str):
 # Départements
 # =======================
 @main_bp.route("/departements", methods=["GET"])
+@swag_from("../../specs/departements.yml")
 def departements_get():
     return jsonify(departements_get_handler()), 200
 
@@ -55,12 +56,13 @@ def departements_get():
 # Circonscriptions
 # =======================
 @main_bp.route("/circonscriptions", methods=["GET"])
+@swag_from("../../specs/circonscriptions.yml")
 def circonscriptions_get():
     return jsonify(circonscriptions_get_handler()), 200
 
 
 @main_bp.route("/circonscriptions/<departement_code>", methods=["GET"])
-def circonscription_redirect_departement(departement_code):
+def circonscription_departement_get(departement_code):
     departement = departement_get_handler(departement_code)
     if departement:
         return jsonify(departement), 200
@@ -68,7 +70,7 @@ def circonscription_redirect_departement(departement_code):
 
 
 @main_bp.route("/circonscriptions/<departement_code>/deputes", methods=["GET"])
-def circonscription_redirect_departement_depute(departement_code):
+def circonscription_departement_depute_get(departement_code):
     return jsonify(deputes_by_departement_handler(departement_code)), 200
 
 
