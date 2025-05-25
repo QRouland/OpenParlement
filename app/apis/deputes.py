@@ -51,19 +51,6 @@ def departements_get():
     return jsonify(departements_get_handler()), 200
 
 
-@main_bp.route("/departements/<departement_code>", methods=["GET"])
-def departement_get(departement_code: str):
-    departement = departement_get_handler(departement_code)
-    if departement:
-        return jsonify(departement), 200
-    abort(404)
-
-
-@main_bp.route("/departements/<departement_code>/deputes", methods=["GET"])
-def deputes_by_departement(departement_code: str):
-    return jsonify(deputes_by_departement_handler(departement_code)), 200
-
-
 # =======================
 # Circonscriptions
 # =======================
@@ -74,12 +61,15 @@ def circonscriptions_get():
 
 @main_bp.route("/circonscriptions/<departement_code>", methods=["GET"])
 def circonscription_redirect_departement(departement_code):
-    return redirect(f"/departements/{departement_code}")
+    departement = departement_get_handler(departement_code)
+    if departement:
+        return jsonify(departement), 200
+    abort(404)
 
 
 @main_bp.route("/circonscriptions/<departement_code>/deputes", methods=["GET"])
 def circonscription_redirect_departement_depute(departement_code):
-    return redirect(f"/departements/{departement_code}/deputes")
+    return jsonify(deputes_by_departement_handler(departement_code)), 200
 
 
 @main_bp.route(
