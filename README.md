@@ -16,19 +16,19 @@ It aims to improve transparency, facilitate civic tech initiatives, and support 
 
 - **Python 3.10+**
 - **Flask** - Web framework
-- **SQLAlchemy** - ORM for database interaction
-- **SQlite/MariaDB** 
+- **SQLAlchemy** - ORM 
+- **SQlite/MariaDB** - SQL Database
+
 ## 📚 API Overview
 
-Base URL: `https://api.openparlement.fr/` (WIP)
+Base URL: `https://api.openparlement.fr/api/v1/` (WIP)
 
 Example endpoints:
 - `GET /deputies` – List all deputies
 - `GET /deputies/<id>` – Get details of a deputy
-- `GET /laws` – List laws and propositions
+- `GET /scrutins` – List scrutins
 - `GET /votes` – Retrieve voting records
-- `GET /parties` – List political parties
-- `GET /sessions` – Parliamentary sessions
+... and more 
 
 Detailed documentation is available at: [API Docs](https://api.openparlement.fr/apidocs) (WIP)
 
@@ -37,11 +37,11 @@ Detailed documentation is available at: [API Docs](https://api.openparlement.fr/
 ### Prerequisites
 
 - Python 3.10+
-- PostgreSQL (or another compatible database)
+- SQlite or MariaDB
 
 ### Installation
 
-```bash
+```commandline
 git clone https://github.com/yourusername/openparlement.git
 cd openparlement
 python -m venv venv
@@ -55,25 +55,34 @@ cp .env.example .env
 Edit `.env` file to set database credentials and environment variables.
 
 ```dotenv
-FLASK_DATABASE_URL=postgresql://user:password@localhost:543_
+FLASK_DB_URL=mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost/${MYSQL_DATABASE}
+```
+or
+```dotenv
+FLASK_DB_URL=sqlite:///db.sqlite3
+```
+
+### Run database migration
+
+```commandline
+alembic upgrade head
+```
+
+### Seed Database with From https://data.assemblee-nationale.fr/
+
+```commandline
+flask db update
 ```
 
 ### Run the App
 
-```bash
-flask db upgrade
+```commandline
 flask run
-```
-
-### Seed Database (optional)
-
-```bash
-python scripts/seed_data.py
 ```
 
 ## 🧪 Running Tests
 
-```bash
+```commandline
 pytest
 ```
 
