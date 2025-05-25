@@ -1,5 +1,5 @@
-from flask import jsonify, request
-from flask.helpers import abort, redirect
+from flasgger import swag_from
+from flask import request, jsonify, abort, current_app as app
 
 from app.apis import main_bp
 from app.handlers.deputes import (
@@ -12,12 +12,6 @@ from app.handlers.deputes import (
     deputes_by_departement_handler,
     deputes_get_handler,
 )
-from flasgger import swag_from
-from flask import current_app as app
-
-
-from flask import request, jsonify, abort, current_app as app
-from flasgger import swag_from
 
 
 # =======================

@@ -10,6 +10,13 @@ from app.utils import normalize
 from app.utils.db import pagined_query, query_one
 
 
+class GroupeParlementaireSchema(Schema):
+    """Schema for the GroupeParlementaire model."""
+
+    id = fields.String()
+    name = fields.String()
+
+
 class DepartementSchema(Schema):
     """Schema for the Departement model."""
 
@@ -23,20 +30,22 @@ class CirconscriptionSchema(Schema):
 
     code = fields.String()
     departement = fields.Nested(DepartementSchema)
-    url = fields.Str()
+    url = fields.String()
 
 
 class DeputeSchema(Schema):
     """Schema for the Depute model."""
 
-    id = fields.Str()
-    first_name = fields.Str()
-    last_name = fields.Str()
-    image = fields.Str()
-    official_page = fields.Str()
-    official_image = fields.Str()
+    id = fields.String()
+    first_name = fields.String()
+    last_name = fields.String()
+    image = fields.String()
+    official_page = fields.String()
+    official_image = fields.String()
     circonscription = fields.Nested(CirconscriptionSchema)
-    url = fields.Str()
+    url = fields.String()
+    gp = fields.Nested(GroupeParlementaireSchema)
+
 
 
 def deputes_get_handler(first_name=None, last_name=None) -> Any:

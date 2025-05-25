@@ -1,5 +1,8 @@
+from datetime import date
+
 from flasgger import swag_from
-from flask import abort, jsonify, current_app as app
+from flask import request, abort, jsonify
+
 from app.apis import main_bp
 from app.handlers.scrutins import (
     depute_scrutin_vote_get_handler,
@@ -8,7 +11,7 @@ from app.handlers.scrutins import (
     scrutins_get_handler,
     scrutin_votes_get_handler,
     vote_get_handler,
-    votes_get_handler,
+    votes_get_handler, depute_votes_stats_get_handler,
 )
 
 
@@ -22,7 +25,24 @@ def scrutins_get():
     """
     Retrieve a list of all scrutins.
     """
-    scrutins = scrutins_get_handler()
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    # Validate dates
+    if start_date is not None:
+        try:
+            start_date = date.fromisoformat(start_date)
+        except ValueError:
+            abort(400, description=f"Invalid 'start_date' date format. Expected ISO format (YYYY-MM-DD), got '{start_date}'.")
+
+    if end_date is not None:
+        try:
+            end_date = date.fromisoformat(end_date)
+        except ValueError:
+            abort(400, description=f"Invalid 'end_date' date format. Expected ISO format (YYYY-MM-DD), got '{end_date}'.")
+
+    scrutins = scrutins_get_handler(start_date=start_date, end_date=end_date)
+
     return jsonify(scrutins), 200
 
 
@@ -80,7 +100,7 @@ def votes_by_depute(depute_id: str):
     votes = depute_votes_get_handler(depute_id)
     if votes:
         return jsonify(votes), 200
-    abort(404, description=f"No votes found for député with ID '{depute_id}'.")
+    abort(404, description=f"Député with ID '{depute_id}' not found.")
 
 
 @main_bp.route("/deputes/<string:depute_id>/votes/<string:scrutin_id>", methods=["GET"])
@@ -92,3 +112,14 @@ def vote_by_depute_and_scrutin(depute_id: str, scrutin_id: str):
     if vote:
         return jsonify(vote), 200
     abort(404, description=f"Vote not found for député '{depute_id}' on scrutin '{scrutin_id}'.")
+
+
+@main_bp.route("/deputes/<string:depute_id>/votes/stats", methods=["GET"])
+def votes_stats_by_depute(depute_id: str):
+    """
+    Retrieve all votes cast by a specific député.
+    """
+    votes = depute_votes_stats_get_handler(depute_id)
+    if votes:
+        return jsonify(votes), 200
+    abort(404, description=f"Député with ID '{depute_id}' not found.")
