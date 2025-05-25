@@ -50,10 +50,12 @@ def query_one(session, model, filter, schema, order_by=None) -> Any | None:
 def pagined_query(session, stmt_query, stmt_count, schema, order_by=None):
     page = int(request.args.get('page', 1))
     per_page = int(request.args.get('per_page', app.config["MAX_PER_PAGE"]))
+    app.logger.debug((page - 1) * per_page)
+    app.logger.debug(per_page)
     stmt_query = stmt_query.order_by(order_by).offset((page - 1) * per_page).limit(per_page)
+    records = session.execute(stmt_query).scalars().all()
     total_items = session.execute(stmt_count).scalar_one()
-    result = session.execute(stmt_query)
-    records = result.scalars().all()
+    app.logger.debug(records)
     return {
         'data': schema.dump(records),
         'meta': {

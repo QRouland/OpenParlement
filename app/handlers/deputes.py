@@ -55,17 +55,17 @@ def deputes_get_handler(first_name=None, last_name=None) -> Any:
         stmt_count = select(func.count()).select_from(Depute)
         if first_name is not None:
             stmt = stmt.where(
-                Depute.first_name_normalize == f"%{normalize(first_name)}%"
+                Depute.first_name_normalize == f"{normalize(first_name)}"
             )
             stmt_count = stmt_count.where(
-                Depute.first_name_normalize == f"%{normalize(first_name)}%"
+                Depute.first_name_normalize == f"{normalize(first_name)}"
             )
         if last_name is not None:
             stmt = stmt.where(
-                Depute.last_name_normalize == f"%{normalize(last_name)}%"
+                Depute.last_name_normalize == f"{normalize(last_name)}"
             )
             stmt_count = stmt_count.where(
-                Depute.last_name_normalize == f"%{normalize(last_name)}%"
+                Depute.last_name_normalize == f"{normalize(last_name)}"
             )
 
         return pagined_query(

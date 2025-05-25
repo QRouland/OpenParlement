@@ -62,11 +62,11 @@ def test_deputes_get_handler_first_name_only(
                " depute.first_name_normalize, depute.gp_id, depute.circonscription_departement_code, "
                "depute.circonscription_code "
                "FROM depute "
-               "WHERE depute.first_name_normalize = '%jean%'"
+               "WHERE depute.first_name_normalize = 'jean'"
         )
         assert (
             stmt_to_string(args[2])
-            == "SELECT count(*) AS count_1 FROM depute WHERE depute.first_name_normalize = '%jean%'"
+            == "SELECT count(*) AS count_1 FROM depute WHERE depute.first_name_normalize = 'jean'"
         )
         assert isinstance(args[3], DeputeSchema)
         assert args[3].many == True
@@ -90,11 +90,11 @@ def test_deputes_get_handler_last_name_only(
                "depute.first_name_normalize, depute.gp_id, depute.circonscription_departement_code, "
                "depute.circonscription_code "
                "FROM depute "
-               "WHERE depute.last_name_normalize = '%dupont%'"
+               "WHERE depute.last_name_normalize = 'dupont'"
         )
         assert (
             stmt_to_string(args[2])
-            == "SELECT count(*) AS count_1 FROM depute WHERE depute.last_name_normalize = '%dupont%'"
+            == "SELECT count(*) AS count_1 FROM depute WHERE depute.last_name_normalize = 'dupont'"
         )
         assert isinstance(args[3], DeputeSchema)
         assert args[3].many == True
@@ -118,12 +118,12 @@ def test_deputes_get_handler_both_names(
                "depute.first_name_normalize, depute.gp_id, depute.circonscription_departement_code, "
                "depute.circonscription_code "
                "FROM depute "
-               "WHERE depute.first_name_normalize = '%jean%' AND depute.last_name_normalize = '%dupont%'"
+               "WHERE depute.first_name_normalize = 'jean' AND depute.last_name_normalize = 'dupont'"
         )
         assert (
             stmt_to_string(args[2])
             == "SELECT count(*) AS count_1 FROM depute "
-               "WHERE depute.first_name_normalize = '%jean%' AND depute.last_name_normalize = '%dupont%'"
+               "WHERE depute.first_name_normalize = 'jean' AND depute.last_name_normalize = 'dupont'"
         )
         assert isinstance(args[3], DeputeSchema)
         assert args[3].many == True

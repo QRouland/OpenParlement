@@ -36,7 +36,7 @@ def app(test_db_uri):
         )
         SCRUTINS_URL = "https://data.assemblee-nationale.fr/static/openData/repository/17/loi/scrutins/Scrutins.json.zip"
 
-    app = create_app(config_class=TestConfig, load_env=False)
+    app = create_app(config_class=TestConfig)
 
     # Initialize the test database engine and session
     init_db(test_db_uri)
