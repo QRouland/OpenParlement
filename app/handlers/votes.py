@@ -9,7 +9,6 @@ from app.utils.db import pagined_query, query_one
 
 class VoteSchema(Schema):
     """Schema for the Vote model."""
-
     depute_id = fields.String()
     scrutin_id = fields.String()
     ballot = fields.String()

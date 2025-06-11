@@ -1,3 +1,4 @@
+from flasgger import swag_from
 from flask import jsonify, abort
 
 from app import main_bp
@@ -9,28 +10,9 @@ from app.handlers.votes import votes_get_handler, vote_get_handler, depute_votes
 # Votes
 # =======================
 
-@main_bp.route("/votes", methods=["GET"])
-def votes_get():
-    """
-    Retrieve all votes.
-    """
-    votes = votes_get_handler()
-    return jsonify(votes), 200
-
-
-@main_bp.route("/votes/<string:vote_id>", methods=["GET"])
-def vote_get(vote_id: str):
-    """
-    Retrieve details of a specific vote by ID.
-    """
-    vote = vote_get_handler(vote_id)
-    if vote:
-        return jsonify(vote), 200
-    abort(404, description=f"Vote with ID '{vote_id}' not found.")
-
-
 @main_bp.route("/scrutins/<string:scrutin_id>/votes", methods=["GET"])
-def votes_by_scrutin(scrutin_id: str):
+@swag_from("../../specs/votes_by_scrutin.yml")
+def votes_by_scrutin_get(scrutin_id: str):
     """
     Retrieve all votes for a specific scrutin.
     """
@@ -41,7 +23,7 @@ def votes_by_scrutin(scrutin_id: str):
 
 
 @main_bp.route("/deputes/<string:depute_id>/votes", methods=["GET"])
-def votes_by_depute(depute_id: str):
+def votes_by_depute_get(depute_id: str):
     """
     Retrieve all votes cast by a specific député.
     """
@@ -52,7 +34,7 @@ def votes_by_depute(depute_id: str):
 
 
 @main_bp.route("/deputes/<string:depute_id>/votes/<string:scrutin_id>", methods=["GET"])
-def vote_by_depute_and_scrutin(depute_id: str, scrutin_id: str):
+def vote_by_depute_scrutin_get(depute_id: str, scrutin_id: str):
     """
     Retrieve the vote cast by a specific député on a specific scrutin.
     """

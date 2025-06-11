@@ -42,6 +42,7 @@ def scrutins_get():
 
 
 @main_bp.route("/scrutins/<string:scrutin_id>", methods=["GET"])
+@swag_from("../../specs/scrutin.yml")
 def scrutin_get(scrutin_id: str):
     """
     Retrieve details of a specific scrutin by ID.

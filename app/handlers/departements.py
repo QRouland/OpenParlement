@@ -1,11 +1,11 @@
 from typing import Any
 
 from marshmallow import Schema, fields
-from sqlalchemy import select, func
+from sqlalchemy import select, func, and_
 
 from app.db import session_scope
 from app.models.depute import Departement
-from app.utils.db import pagined_query
+from app.utils.db import pagined_query, query_one
 
 
 class DepartementSchema(Schema):
@@ -31,5 +31,15 @@ def departements_get_handler() -> Any:
         )
 
 
-def departement_get_handler(departement_code) -> Any:
-    raise NotImplementedError
+def departement_get_handler(departement_code: str) -> Any:
+    """
+    Get a single Departement record by its code.
+
+    Args:
+        departement_code (str): The coete of the Departement record to retrieve.
+
+    Returns:
+        Dict[str, str] :  A dictionary representing the Departement record that was retrieved.
+    """
+    with session_scope() as session:
+        return query_one(session, Departement, and_(Departement.code == departement_code), DepartementSchema())

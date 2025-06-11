@@ -49,7 +49,7 @@ def depute_get(depute_id: str):
 
 
 @main_bp.route("/departements/<departement_code>/circonscriptions/<circonscription_code>/depute", methods=["GET"])
-@swag_from("../../specs/depute_by_circonscription_yml")
+@swag_from("../../specs/depute_by_circonscription.yml")
 def depute_by_circonscription_get(departement_code, circonscription_code):
     """
     Get the député elected in a specific circonscription of a département.

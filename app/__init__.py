@@ -46,6 +46,7 @@ def create_app(config_class="app.config", load_env_=True):
     # Make flask stateless
     app.config["SESSION_COOKIE_NAME"] = ""
     app.config["PERMANENT_SESSION_LIFETIME"] = 0
+
     # Setup Flasgger
     template = {
         "swagger": "2.0",

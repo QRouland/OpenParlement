@@ -1,0 +1,129 @@
+summary: Get all circonscriptions for a specific département.
+description: |
+  Retrieves a list of all circonscriptions within a given departement identified by its unique ID.
+
+parameters:
+  - name: departement_code
+    in: path
+    type: string
+    required: true
+    description: The unique identifier of the departement.
+
+  - name: page
+    in: query
+    type: integer
+    default: 1
+    minimum: 1
+    description: |
+      The page number to retrieve. 
+      Must be a positive integer (default is 1).
+
+    required: false
+
+  - name: per_page
+    in: query
+    type: integer
+    default: {MAX_PER_PAGE}
+    minimum: 1
+    maximum: {MAX_PER_PAGE}
+    description: |
+      The number of items to return per page. 
+      Must be a positive integer and no greater than {MAX_PER_PAGE} (default is {MAX_PER_PAGE}).
+
+    required: false
+
+responses:
+  200:
+    description: |
+      Successfully retrieved a list of circonscriptions for the specified departement.
+
+    schema:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            code:
+              type: string
+              description: The unique identifier of the departement.
+
+            name:
+              type: string
+              description: The name of the departement.
+
+            circonscriptions:
+              type: array
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: The unique identifier for a circonscription.
+                  # Add any other relevant fields for circonscriptions here
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              description: The current page number of the result set.
+
+            per_page:
+              type: integer
+              description: Number of items returned per page.
+
+            total_items:
+              type: integer
+              description: Total number of circonscriptions in the result set.
+
+            total_pages:
+              type: integer
+              description: Total number of pages available for this query.
+
+          required:
+            - current_page
+            - per_page
+            - total_items
+            - total_pages
+      example:
+        data:
+          code: '94'
+          name: "Val-de-Marne"
+          circonscriptions:
+            - code: '10'
+        meta:
+          current_page: 1
+          per_page: 200
+          total_items: 1
+          total_pages: 1
+
+  404:
+    summary: Not Found
+    description: |
+      No circonscriptions found for the specified departement.
+
+    schema:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: |
+            HTTP status code indicating that no resources were found (404).
+
+        msg:
+          type: string
+          description: |
+            A message explaining that no circonscriptions exist for this departement.
+
+        name:
+          type: string
+          description: |
+            The name of the HTTP error status (Not Found).
+      required:
+        - code
+        - msg
+        - name
+
+      example:
+        code : 404
+        msg : No circonscriptions found for departement with ID '94'.
+        name: Not Found
