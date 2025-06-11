@@ -102,8 +102,12 @@ def create_app(config_class="app.config", load_env_=True):
             )
 
     # Setup routes
+    from app.apis import circonscriptions
+    from app.apis import departements
     from app.apis import deputes
     from app.apis import scrutins
+    from app.apis import votes
+
 
     app.register_blueprint(main_bp)
 

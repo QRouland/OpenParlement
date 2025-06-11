@@ -5,7 +5,8 @@ from sqlalchemy.sql import func, select
 from sqlalchemy.sql.expression import and_
 
 from app.db import session_scope
-from app.models.depute import Circonscription, Departement, Depute
+from app.handlers.circonscriptions import CirconscriptionSchema
+from app.models.depute import Depute
 from app.utils import normalize
 from app.utils.db import pagined_query, query_one
 
@@ -15,22 +16,6 @@ class GroupeParlementaireSchema(Schema):
 
     id = fields.String()
     name = fields.String()
-
-
-class DepartementSchema(Schema):
-    """Schema for the Departement model."""
-
-    code = fields.String()
-    name = fields.String()
-    url = fields.Str()
-
-
-class CirconscriptionSchema(Schema):
-    """Schema for the Circonscription model."""
-
-    code = fields.String()
-    departement = fields.Nested(DepartementSchema)
-    url = fields.String()
 
 
 class DeputeSchema(Schema):
@@ -96,40 +81,6 @@ def depute_get_handler(depute_id: str) -> Any:
         return query_one(session, Depute, and_(Depute.id == depute_id), DeputeSchema())
 
 
-def departements_get_handler() -> Any:
-    """
-    Get a list of all Departement records.
-
-    Returns:
-        List[Dict[str, str]]: A list of dictionaries representing the Departement records.
-    """
-    with session_scope() as session:
-        stmt = select(Departement)
-        stmt_count = select(func.count()).select_from(Departement)
-        return pagined_query(
-            session, stmt, stmt_count, DepartementSchema(many=True), Departement.code
-        )
-
-
-def circonscriptions_by_departement_handler(department_code: str) -> Any:
-    """
-    Get a single Departement record by its code.
-
-    Args:
-        department_code (str): The code of the Departement record to retrieve.
-
-    Returns:
-        Dict[str, str]: A dictionary representing the Departement record that was retrieved.
-    """
-    with session_scope() as session:
-        return query_one(
-            session,
-            Departement,
-            and_(Departement.code == department_code),
-            DepartementSchema(),
-        )
-
-
 def deputes_by_departement_handler(department_code: str) -> Any:
     """
     Get a list of Depute records by the code of their associated Departement.
@@ -151,50 +102,6 @@ def deputes_by_departement_handler(department_code: str) -> Any:
         )
         return pagined_query(
             session, stmt, stmt_count, DeputeSchema(many=True), Depute.last_name
-        )
-
-
-def circonscriptions_get_handler() -> Any:
-    """
-    Get a list of all Circonscription records.
-
-    Returns:
-        List[Dict[str, str]]: A list of dictionaries representing the Circonscription records.
-    """
-    with session_scope() as session:
-        stmt = select(Circonscription)
-        stmt_count = select(func.count()).select_from(Circonscription)
-        return pagined_query(
-            session,
-            stmt,
-            stmt_count,
-            CirconscriptionSchema(many=True),
-            Circonscription.departement_code,
-        )
-
-
-def circonscription_get_handler(
-    departement_code: str, circonscription_code: str
-) -> Any:
-    """
-    Get a single Circonscription record by its code and the code of its associated Departement.
-
-    Args:
-        departement_code (str): The code of the Departement record to search for Circonscription records in.
-        circonscription_code (str): The code of the Circonscription record to retrieve.
-
-    Returns:
-        Dict[str, str]: A dictionary representing the Circonscription record that was retrieved.
-    """
-    with session_scope() as session:
-        return query_one(
-            session,
-            Circonscription,
-            and_(
-                Circonscription.code == circonscription_code,
-                Circonscription.departement_code == departement_code,
-            ),
-            CirconscriptionSchema(),
         )
 
 

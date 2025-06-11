@@ -14,12 +14,12 @@ def test_deputes_get_success(mock_handler, client):
 
 
 @patch("app.apis.deputes.deputes_get_handler")
-def test_deputes_get_bad_request(mock_handler, client):
+def test_deputes_get_not_found(mock_handler, client):
     mock_handler.return_value = None  # or []
 
     response = client.get("/deputes?first_name=Jean&last_name=Dupont")
 
-    assert response.status_code == 400
+    assert response.status_code == 404
     mock_handler.assert_called_once_with("Jean", "Dupont")
 
 
@@ -76,5 +76,6 @@ def test_depute_get_not_found(mock_handler, client):
     response = client.get("/deputes/999")
 
     assert response.status_code == 404
-    assert b"Depute not found." in response.data
+    print(response.data)
+    assert b"D\\u00e9put\\u00e9 with ID \'999\' not found." in response.data
     mock_handler.assert_called_once_with("999")

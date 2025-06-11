@@ -11,7 +11,7 @@ from app.utils.db import normalize_field
 
 class Depute(Base):
     """
-    Represents a deputy (député) with identification, constituency, and group affiliations.
+    Represents a député (deputy) with identification, constituency, and group affiliations.
 
     Attributes:
         id (str): Unique identifier for the deputy.
@@ -88,7 +88,7 @@ class Depute(Base):
 
 class GroupParlementaire(Base):
     """
-    Represents a parliamentary group (groupe parlementaire).
+    Represents a groupe parlementaire (parliamentary group).
 
     Attributes:
         id (str): Unique identifier of the group.
@@ -106,7 +106,7 @@ class GroupParlementaire(Base):
 
 class Circonscription(Base):
     """
-    Represents an electoral district (circonscription).
+    Represents a circonscription (electoral district ).
 
     Attributes:
         departement_code (str): Foreign key to the related department.
