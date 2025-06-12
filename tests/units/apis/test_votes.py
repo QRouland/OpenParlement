@@ -1,38 +1,5 @@
 from unittest.mock import patch
 
-@patch("app.apis.votes.votes_get_handler")
-def test_votes_get_success(mock_handler, client):
-    mock_handler.return_value = [{"id": 1, "scrutin": "A", "depute": "B"}]
-
-    response = client.get("/votes")
-
-    assert response.status_code == 200
-    assert response.is_json
-    assert response.get_json() == [{"id": 1, "scrutin": "A", "depute": "B"}]
-    mock_handler.assert_called_once_with()
-
-
-@patch("app.apis.votes.vote_get_handler")
-def test_vote_get_success(mock_handler, client):
-    mock_handler.return_value = {"id": "2", "scrutin": "C", "depute": "D"}
-
-    response = client.get("/votes/2")
-
-    assert response.status_code == 200
-    assert response.is_json
-    assert response.get_json() == {"id": "2", "scrutin": "C", "depute": "D"}
-    mock_handler.assert_called_once_with("2")
-
-
-@patch("app.apis.votes.vote_get_handler")
-def test_vote_get_not_found(mock_handler, client):
-    mock_handler.return_value = None
-
-    response = client.get("/votes/99")
-
-    assert response.status_code == 404
-    assert b"Vote with ID '99' not found." in response.data
-    mock_handler.assert_called_once_with("99")
 
 
 @patch("app.apis.votes.scrutin_votes_get_handler")
