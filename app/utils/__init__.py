@@ -1,9 +1,9 @@
 import json
+import os
 from os import PathLike
 from typing_extensions import Generator, Union
 import urllib.parse
 import re
-from backports.datetime_fromisoformat import os
 from unidecode import unidecode
 
 from flask import current_app as app
