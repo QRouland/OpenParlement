@@ -13,7 +13,7 @@ from app.utils.config import str_to_bool, str_to_int
 from commands import db_cli
 
 
-def create_app(config_class="app.config", load_env_=True):
+def create_app():
     app = Flask(__name__)
 
 
