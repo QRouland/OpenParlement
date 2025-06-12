@@ -11,7 +11,6 @@ from app.db import init_db
 
 @pytest.fixture(scope="session")
 def test_db_uri():
-    # Using SQLite in-memory for simplicity or temp file for persistence across threads
     db_fd, db_path = tempfile.mkstemp()
     uri = f"sqlite:///{db_path}"
     yield uri
@@ -21,8 +20,7 @@ def test_db_uri():
 
 @pytest.fixture(scope="session")
 def app(test_db_uri):
-    os.putenv("FLASK_DB_URL", test_db_uri)
-
+    os.environ["FLASK_DB_URL"] = test_db_uri
     app = create_app()
 
     # # Create tables
