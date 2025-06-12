@@ -1,6 +1,9 @@
+from inspect import isclass
+
 import pytest
 from unittest.mock import patch, MagicMock
-from app.handlers.deputes import deputes_get_handler, DeputeSchema
+
+from app.handlers.deputes import deputes_get_handler, depute_get_handler, DeputeSchema
 from app.models.depute import Depute
 from tests.utils import stmt_to_string
 
@@ -17,6 +20,11 @@ def mock_pagined_query():
         mock.return_value = [{"id": 1, "name": "Test"}]
         yield mock
 
+
+@pytest.fixture
+def mock_query_one():
+    with patch('app.handlers.deputes.query_one') as mocked_method:
+        yield mocked_method
 
 def test_deputes_get_handler_no_filters(
     flask_request_context, patch_session_scope, mock_pagined_query
@@ -128,3 +136,34 @@ def test_deputes_get_handler_both_names(
         assert isinstance(args[3], DeputeSchema)
         assert args[3].many == True
         assert  str(args[4]) == str(Depute.last_name)
+
+
+
+@patch("app.handlers.deputes.query_one")
+def test_depute_get_handler_success(mock_query_one):
+    mock_query_one.return_value = {"id": 1, "name": "Test"}
+
+    result = depute_get_handler(depute_id="1")
+
+    assert result == {"id": 1, "name": "Test"}
+    mock_query_one.assert_called_once()
+
+
+@pytest.mark.parametrize("depute_id, res", [
+    ( "1",  {"id": 1, "name": "Test"}),
+    ("99", None),
+])
+def test_depute_get_handler(mock_query_one, patch_session_scope, depute_id, res):
+    patcher, mock_session = patch_session_scope("app.handlers.deputes")
+    with patcher:
+        mock_query_one.return_value = res
+        result = depute_get_handler(depute_id=depute_id)
+
+        assert result == res
+        mock_query_one.assert_called_once()
+        args, kwargs = mock_query_one.call_args
+        assert args[0] == mock_session
+        assert args[1] == Depute
+        assert  stmt_to_string(args[2]) == f"depute.id = '{depute_id}'"
+        assert isinstance(args[3], DeputeSchema)
+        assert args[3].many == False
